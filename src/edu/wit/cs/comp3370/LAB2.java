@@ -1,8 +1,8 @@
 package edu.wit.cs.comp3370;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 /* Adds floating point numbers with varying precision 
  * 
@@ -12,14 +12,83 @@ import java.util.ArrayList;
  * 
  */
 
-
 public class LAB2 {
-	
-	//TODO: document this method
+
+	// TODO: document this method
 	public static float heapAdd(float[] a) {
-		//TODO: implement this method
-		
-		return -1;
+		if (a.length == 0) {
+			return 0;
+		}
+		float[] heap = new float[a.length];
+
+		// Make heap
+		int end = a.length - 1;
+		for (int x = 0; x < a.length; x++) {
+			heap[x] = a[x];
+			pullup(heap, x);
+		}
+
+		while (end > 0) {
+			float min = heap[0];
+			heap[0] = heap[end];
+			end--;
+			pushdown(heap, 0, end);
+			heap[0] += min;
+			pushdown(heap, 0, end);
+		}
+
+		return heap[0];
+
+	}
+
+	private static void pushdown(float[] a, int i, int max) {
+		if (i >= max) {
+			return;
+		}
+		int mini = i;
+		int left = getLeftChild(i);
+		int right = getRightChild(i);
+
+		if (left <= max && a[i] > a[left]) {
+			mini = left;
+		}
+		if (right <= max && a[mini] > a[right]) {
+			mini = right;
+		}
+
+		if (mini != i) {
+			float t = a[i];
+			a[i] = a[mini];
+			a[mini] = t;
+
+			pushdown(a, mini, max);
+		}
+
+	}
+
+	private static void pullup(float[] a, int i) {
+		if (i == 0) {
+			return;
+		}
+		int p = getParent(i);
+		if (a[i] < a[p]) {
+			float temp = a[i];
+			a[i] = a[p];
+			a[p] = temp;
+			pullup(a, p);
+		}
+	}
+
+	private static int getParent(int i) {
+		return (i - 1) / 2;
+	}
+
+	private static int getLeftChild(int i) {
+		return 2 * i + 1;
+	}
+
+	private static int getRightChild(int i) {
+		return 2 * i + 2;
 	}
 
 	/********************************************
@@ -31,10 +100,10 @@ public class LAB2 {
 	// sum an array of floats sequentially - high rounding error
 	public static float seqAdd(float[] a) {
 		float ret = 0;
-		
+
 		for (int i = 0; i < a.length; i++)
 			ret += a[i];
-		
+
 		return ret;
 	}
 
@@ -50,30 +119,40 @@ public class LAB2 {
 	public static float min2ScanAdd(float[] a) {
 		int min1, min2;
 		float tmp;
-		
-		if (a.length == 0) return 0;
-		
+
+		if (a.length == 0)
+			return 0;
+
 		for (int i = 0, end = a.length; i < a.length - 1; i++, end--) {
-			
-			if (a[0] < a[1]) { min1 = 0; min2 = 1; }	// initialize
-			else { min1 = 1; min2 = 0; }
-			
-			for (int j = 2; j < end; j++) {		// find two min indices
-				if (a[min1] > a[j]) { min2 = min1; min1 = j; }
-				else if (a[min2] > a[j]) { min2 = j; }
-			}
-			
-			tmp = a[min1] + a[min2];	// add together
-			if (min1<min2) {			// put into first slot of array
-				a[min1] = tmp;			// fill second slot from end of array
-				a[min2] = a[end-1];
-			}
+
+			if (a[0] < a[1]) {
+				min1 = 0;
+				min2 = 1;
+			} // initialize
 			else {
+				min1 = 1;
+				min2 = 0;
+			}
+
+			for (int j = 2; j < end; j++) { // find two min indices
+				if (a[min1] > a[j]) {
+					min2 = min1;
+					min1 = j;
+				} else if (a[min2] > a[j]) {
+					min2 = j;
+				}
+			}
+
+			tmp = a[min1] + a[min2]; // add together
+			if (min1 < min2) { // put into first slot of array
+				a[min1] = tmp; // fill second slot from end of array
+				a[min2] = a[end - 1];
+			} else {
 				a[min2] = tmp;
-				a[min1] = a[end-1];
+				a[min1] = a[end - 1];
 			}
 		}
-		
+
 		return a[0];
 	}
 
@@ -93,7 +172,7 @@ public class LAB2 {
 	// copies an ArrayList to an array
 	private static float[] toFloatArray(ArrayList<Float> a) {
 		float[] ret = new float[a.size()];
-		for(int i = 0; i < ret.length; i++)
+		for (int i = 0; i < ret.length; i++)
 			ret[i] = a.get(i);
 		return ret;
 	}
@@ -104,7 +183,8 @@ public class LAB2 {
 		System.out.printf("Enter the adding algorithm to use ([h]eap, [m]in2scan, se[q], [s]ort): ");
 		char algo = s.next().charAt(0);
 
-		System.out.printf("Enter the non-negative floats that you would like summed, followed by a non-numeric input: ");
+		System.out
+				.printf("Enter the non-negative floats that you would like summed, followed by a non-numeric input: ");
 		float[] values = getFloats(s);
 		float sum = 0;
 
@@ -113,13 +193,12 @@ public class LAB2 {
 		if (values.length == 0) {
 			System.out.println("You must enter at least one value");
 			System.exit(0);
-		}
-		else if (values.length == 1) {
+		} else if (values.length == 1) {
 			System.out.println("Sum is " + values[0]);
 			System.exit(0);
-			
+
 		}
-		
+
 		switch (algo) {
 		case 'h':
 			sum = heapAdd(values);
@@ -139,7 +218,7 @@ public class LAB2 {
 			break;
 		}
 
-		System.out.printf("Sum is %f\n", sum);		
+		System.out.printf("Sum is %f\n", sum);
 
 	}
 
