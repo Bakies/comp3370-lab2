@@ -14,7 +14,12 @@ import java.util.Scanner;
 
 public class LAB2 {
 
-	// TODO: document this method
+	/**
+ 	 * Creates a sorted heap out of the input array
+ 	 * and adds the floats smallest at a time.
+ 	 * This is a quick way and more accurate way add a list of floats
+ 	 *
+ 	 */
 	public static float heapAdd(float[] a) {
 		if (a.length == 0) {
 			return 0;
@@ -28,11 +33,18 @@ public class LAB2 {
 			pullup(heap, x);
 		}
 
+		// loop and add
 		while (end > 0) {
+			// Take the minimum off the head
+			// move the end to the head
 			float min = heap[0];
 			heap[0] = heap[end];
-			end--;
+			// Make the heap smaller, remaking arrays is slow 
+			// Reorganize to make sure the heap is still sorted
+			end--; 
 			pushdown(heap, 0, end);
+			// add the min we pulled off
+			// reorganize again to keep the heap sorted
 			heap[0] += min;
 			pushdown(heap, 0, end);
 		}
@@ -49,6 +61,7 @@ public class LAB2 {
 		int left = getLeftChild(i);
 		int right = getRightChild(i);
 
+		// <= since max is the largest index not the array length
 		if (left <= max && a[i] > a[left]) {
 			mini = left;
 		}
