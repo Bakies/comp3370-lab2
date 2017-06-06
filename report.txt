@@ -1,0 +1,10 @@
+Score: 100
+
+== junit ==
+edu.wit.cs.comp3370.grading.LAB2Grading#testSmall: +70
+edu.wit.cs.comp3370.grading.LAB2Grading#testRandInts: +5
+edu.wit.cs.comp3370.grading.LAB2Grading#testRandFloats: +10
+edu.wit.cs.comp3370.grading.LAB2Grading#testBig: +15
+
+== ontime ==
+ontime: +0
